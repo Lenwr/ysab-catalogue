@@ -47,7 +47,7 @@ async function handleLogin() {
         Admin
       </p>
 
-      <h1 class="mt-3 text-3xl font-bold">Connexion</h1>
+      <h1 class="mt-2 text-3xl font-bold">Connexion</h1>
 
       <p class="mt-3 text-sm leading-7 text-zinc-600">
         Connecte-toi pour gérer les produits du catalogue YSAB.
