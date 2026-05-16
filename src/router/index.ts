@@ -10,7 +10,6 @@ import AdminProducts from "../pages/admin/AdminProducts.vue";
 import AdminProductNew from "../pages/admin/AdminProductNew.vue";
 import AdminProductEdit from "../pages/admin/AdminProductEdit.vue";
 import AdminProductVariants from "../pages/admin/AdminProductVariants.vue";
-
 const routes = [
   { path: "/", component: Home },
   { path: "/catalogue", component: Catalogue },

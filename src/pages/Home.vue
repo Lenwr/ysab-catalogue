@@ -3,12 +3,12 @@ import { onMounted, ref } from "vue";
 import { supabase } from "../lib/supabase";
 import Footer from "../components/Footer.vue";
 
-const heroImages = ["/images/waxhollandais.jpg", "/images/superwax.jpg"];
+const heroImages = ["/images/waxhollandais.jpg", "/images/superwax.jpg", "/images/hero1.jpeg", "/images/hero2.jpeg"];
 
 const categories = [
-  { name: "Wax Hollandais", image: "/images/waxhollandais.jpg" },
-  { name: "Super Wax", image: "/images/superwax.jpg" },
-  { name: "Nouveautés", image: "/images/waxhollandais.jpg" },
+  { name: "Wax Hollandais", image: "/images/wax hollandais.png" },
+  { name: "Super Wax", image: "/images/super wax.png" },
+  { name: "Nouveautés", image: "/images/nouveautes.png" },
 ];
 
 const featuredProducts = ref([]);
@@ -127,7 +127,7 @@ onMounted(async () => {
             >
               <div class="aspect-[3/4] overflow-hidden rounded-[1.35rem]">
                 <img
-                  :src="heroImages[0]"
+                  :src="heroImages[2]"
                   alt="Pagne YSAB"
                   class="h-full w-full object-cover"
                 />
@@ -139,7 +139,7 @@ onMounted(async () => {
             >
               <div class="aspect-[3/4] overflow-hidden rounded-[1.35rem]">
                 <img
-                  :src="heroImages[1]"
+                  :src="heroImages[3]"
                   alt="Collection YSAB"
                   class="h-full w-full object-cover"
                 />

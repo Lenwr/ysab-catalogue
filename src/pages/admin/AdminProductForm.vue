@@ -14,6 +14,10 @@ const props = defineProps({
     type: String,
     default: "Créer le produit",
   },
+  colors: {
+    type: Array,
+    default: () => [],
+  },
 });
 
 const emit = defineEmits(["submit"]);
@@ -68,7 +72,10 @@ function slugify(value) {
 watch(
   () => form.value.name,
   (value) => {
-    if (!props.initialData && (!form.value.slug || form.value.slug === slugify(form.value.slug))) {
+    if (
+      !props.initialData &&
+      (!form.value.slug || form.value.slug === slugify(form.value.slug))
+    ) {
       form.value.slug = slugify(value);
     }
   }
@@ -93,12 +100,17 @@ function handleSubmit() {
 
 <template>
   <form class="space-y-8" @submit.prevent="handleSubmit">
+    <!-- INFOS PRODUIT -->
     <div class="rounded-[2rem] border border-zinc-200 bg-white p-6">
       <h2 class="text-lg font-bold">Informations produit</h2>
 
       <div class="mt-6 grid gap-5 md:grid-cols-2">
+        <!-- NOM -->
         <div>
-          <label class="mb-2 block text-sm font-medium">Nom</label>
+          <label class="mb-2 block text-sm font-medium">
+            Nom
+          </label>
+
           <input
             v-model="form.name"
             type="text"
@@ -108,8 +120,12 @@ function handleSubmit() {
           />
         </div>
 
+        <!-- SLUG -->
         <div>
-          <label class="mb-2 block text-sm font-medium">Slug</label>
+          <label class="mb-2 block text-sm font-medium">
+            Slug
+          </label>
+
           <input
             v-model="form.slug"
             type="text"
@@ -119,8 +135,12 @@ function handleSubmit() {
           />
         </div>
 
+        <!-- REFERENCE -->
         <div>
-          <label class="mb-2 block text-sm font-medium">Référence</label>
+          <label class="mb-2 block text-sm font-medium">
+            Référence
+          </label>
+
           <input
             v-model="form.reference"
             type="text"
@@ -129,29 +149,68 @@ function handleSubmit() {
           />
         </div>
 
+        <!-- CATEGORIE -->
         <div>
-          <label class="mb-2 block text-sm font-medium">Catégorie</label>
-          <input
+          <label class="mb-2 block text-sm font-medium">
+            Catégorie
+          </label>
+
+          <select
             v-model="form.category"
-            type="text"
             required
-            class="w-full rounded-2xl border border-zinc-200 px-4 py-3 outline-none transition focus:border-black"
-            placeholder="Wax Hollandais"
-          />
+            class="w-full rounded-2xl border border-zinc-200 bg-white px-4 py-3 outline-none transition focus:border-black"
+          >
+            <option value="">
+              Choisir une catégorie
+            </option>
+
+            <option value="Wax Hollandais">
+              Wax Hollandais
+            </option>
+
+            <option value="Super Wax">
+              Super Wax
+            </option>
+
+            <option value="Grand Super-Wax">
+              Grand Super-Wax
+            </option>
+          </select>
         </div>
 
+        <!-- COULEUR -->
         <div>
-          <label class="mb-2 block text-sm font-medium">Couleur principale</label>
+          <label class="mb-2 block text-sm font-medium">
+            Couleur principale
+          </label>
+
           <input
             v-model="form.color"
+            list="color-options"
             type="text"
             class="w-full rounded-2xl border border-zinc-200 px-4 py-3 outline-none transition focus:border-black"
             placeholder="Bleu, Rouge, Vert..."
           />
+
+          <datalist id="color-options">
+            <option
+              v-for="color in colors"
+              :key="color"
+              :value="color"
+            />
+          </datalist>
+
+          <p class="mt-1 text-xs text-zinc-500">
+            Tu peux choisir ou écrire une nouvelle couleur.
+          </p>
         </div>
 
+        <!-- MOTIF -->
         <div>
-          <label class="mb-2 block text-sm font-medium">Motif</label>
+          <label class="mb-2 block text-sm font-medium">
+            Motif
+          </label>
+
           <input
             v-model="form.pattern"
             type="text"
@@ -161,8 +220,12 @@ function handleSubmit() {
         </div>
       </div>
 
+      <!-- DESCRIPTION -->
       <div class="mt-5">
-        <label class="mb-2 block text-sm font-medium">Description</label>
+        <label class="mb-2 block text-sm font-medium">
+          Description
+        </label>
+
         <textarea
           v-model="form.description"
           rows="5"
@@ -172,11 +235,15 @@ function handleSubmit() {
       </div>
     </div>
 
+    <!-- IMAGE -->
     <div class="rounded-[2rem] border border-zinc-200 bg-white p-6">
       <h2 class="text-lg font-bold">Image principale</h2>
 
       <div class="mt-5">
-        <label class="mb-2 block text-sm font-medium">Choisir une image</label>
+        <label class="mb-2 block text-sm font-medium">
+          Choisir une image
+        </label>
+
         <input
           type="file"
           accept="image/*"
@@ -189,26 +256,40 @@ function handleSubmit() {
         v-if="imagePreview"
         class="mt-5 overflow-hidden rounded-[1.5rem] border border-zinc-200 bg-zinc-50"
       >
-        <img :src="imagePreview" alt="Aperçu" class="h-80 w-full object-cover" />
+        <img
+          :src="imagePreview"
+          alt="Aperçu"
+          class="h-80 w-full object-cover"
+        />
       </div>
     </div>
 
+    <!-- VISIBILITE -->
     <div class="rounded-[2rem] border border-zinc-200 bg-white p-6">
       <h2 class="text-lg font-bold">Visibilité</h2>
 
       <div class="mt-5 flex flex-col gap-4">
         <label class="flex items-center gap-3 text-sm">
-          <input v-model="form.is_featured" type="checkbox" />
+          <input
+            v-model="form.is_featured"
+            type="checkbox"
+          />
+
           Mettre ce pagne en vedette
         </label>
 
         <label class="flex items-center gap-3 text-sm">
-          <input v-model="form.is_available" type="checkbox" />
+          <input
+            v-model="form.is_available"
+            type="checkbox"
+          />
+
           Produit disponible
         </label>
       </div>
     </div>
 
+    <!-- SUBMIT -->
     <div class="flex justify-end">
       <button
         type="submit"

@@ -105,13 +105,13 @@ watch(
         :to="`/product/${product.slug}`"
         class="font-medium text-zinc-900 hover:underline"
       >
-        {{ product.category }}
+      {{ product.name }}   {{ selectedImage.label }}
       </router-link>
 
-      <p class="mt-1 text-sm text-zinc-500">{{ product.name }}</p>
+      <p class="mt-1 text-sm text-zinc-500">  {{ product.category }}</p>
 
       <p v-if="selectedImage?.label" class="mt-1 text-sm text-zinc-400">
-        {{ selectedImage.label }}
+      
       </p>
 
       <p v-if="product.pattern" class="mt-1 text-sm text-zinc-400">
