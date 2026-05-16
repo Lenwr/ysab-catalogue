@@ -1,7 +1,7 @@
 <script setup>
 import { onMounted, ref } from "vue";
 import { supabase } from "../lib/supabase";
-import Footer from "../components/Footer.vue";
+
 
 const heroImages = ["/images/waxhollandais.jpg", "/images/superwax.jpg", "/images/hero1.jpeg", "/images/hero2.jpeg"];
 
@@ -53,7 +53,8 @@ onMounted(async () => {
 </script>
 
 <template>
-  <main class="min-h-screen bg-[#f6f1ea] text-black">
+  <main class="min-h-screen bg-[#f5efe6] text-black">
+
     <!-- HERO -->
     <section class="px-4 pb-8 pt-6 md:px-6 md:pb-12 md:pt-8">
       <div
@@ -382,6 +383,5 @@ onMounted(async () => {
       </div>
     </section>
 
-    <Footer />
   </main>
 </template>

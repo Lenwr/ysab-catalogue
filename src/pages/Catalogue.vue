@@ -2,7 +2,7 @@
 import { ref, computed, onMounted } from "vue";
 import { supabase } from "../lib/supabase";
 import ProductCard from "../components/ProductCard.vue";
-import Footer from "../components/Footer.vue";
+
 
 const products = ref([]);
 const loading = ref(true);
@@ -89,6 +89,7 @@ const filteredProducts = computed(() => {
 
 <template>
   <main class="mx-auto max-w-[1600px] px-6 py-8">
+ 
     <div class="mb-8 flex flex-col gap-4 rounded-3xl border border-zinc-200 bg-white p-6 lg:flex-row lg:items-end lg:justify-between">
       <div class="grid gap-4 md:grid-cols-3 lg:flex-1">
         <div>
@@ -177,6 +178,5 @@ const filteredProducts = computed(() => {
         :product="product"
       />
     </div>
-    <Footer />
   </main>
 </template>
