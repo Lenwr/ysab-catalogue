@@ -1,39 +1,34 @@
 import { createRouter, createWebHistory } from "vue-router";
 import { supabase } from "../lib/supabase";
 
-import Home from "../pages/Home.vue";
-import Catalogue from "../pages/Catalogue.vue";
-import ProductPage from "../pages/ProductPage.vue";
-import Login from "../pages/Login.vue";
-import AdminHome from "../pages/admin/AdminHome.vue";
-import AdminProducts from "../pages/admin/AdminProducts.vue";
-import AdminProductNew from "../pages/admin/AdminProductNew.vue";
-import AdminProductEdit from "../pages/admin/AdminProductEdit.vue";
-import AdminProductVariants from "../pages/admin/AdminProductVariants.vue";
 const routes = [
-  { path: "/", component: Home },
-  { path: "/catalogue", component: Catalogue },
-  { path: "/product/:slug", component: ProductPage },
-  { path: "/login", component: Login },
-  { path: "/admin", component: AdminHome, meta: { requiresAuth: true } },
+  { path: "/", component: () => import("../pages/Home.vue") },
+  { path: "/catalogue", component: () => import("../pages/Catalogue.vue") },
+  { path: "/product/:slug", component: () => import("../pages/ProductPage.vue") },
+  { path: "/login", component: () => import("../pages/Login.vue") },
+  {
+    path: "/admin",
+    component: () => import("../pages/admin/AdminHome.vue"),
+    meta: { requiresAuth: true },
+  },
   {
     path: "/admin/products",
-    component: AdminProducts,
+    component: () => import("../pages/admin/AdminProducts.vue"),
     meta: { requiresAuth: true },
   },
   {
     path: "/admin/products/new",
-    component: AdminProductNew,
+    component: () => import("../pages/admin/AdminProductNew.vue"),
     meta: { requiresAuth: true },
   },
   {
     path: "/admin/products/:id/edit",
-    component: AdminProductEdit,
+    component: () => import("../pages/admin/AdminProductEdit.vue"),
     meta: { requiresAuth: true },
   },
   {
     path: "/admin/products/:id/variants",
-    component: AdminProductVariants,
+    component: () => import("../pages/admin/AdminProductVariants.vue"),
     meta: { requiresAuth: true },
   },
 ];

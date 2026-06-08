@@ -1,7 +1,9 @@
 <script setup>
 import { ref, onMounted } from "vue";
+import { useRouter } from "vue-router";
 import { supabase } from "../lib/supabase";
 
+const router = useRouter();
 const isOpen = ref(false);
 const isLoggedIn = ref(false);
 
@@ -11,7 +13,17 @@ onMounted(async () => {
   } = await supabase.auth.getSession();
 
   isLoggedIn.value = !!session;
+
+  supabase.auth.onAuthStateChange((_event, session) => {
+    isLoggedIn.value = !!session;
+  });
 });
+
+async function handleLogout() {
+  await supabase.auth.signOut();
+  isOpen.value = false;
+  router.push("/");
+}
 
 const navLinks = [
   { label: "Accueil", to: "/" },
@@ -66,6 +78,23 @@ const navLinks = [
         >
           WhatsApp
         </a>
+
+        <router-link
+          v-if="isLoggedIn"
+          to="/admin"
+          class="text-sm font-semibold text-zinc-600 transition hover:text-black"
+        >
+          Admin
+        </router-link>
+
+        <button
+          v-if="isLoggedIn"
+          type="button"
+          class="text-sm font-semibold text-zinc-600 transition hover:text-black"
+          @click="handleLogout"
+        >
+          Déconnexion
+        </button>
       </nav>
 
       <!-- MOBILE BUTTON -->
@@ -105,7 +134,23 @@ const navLinks = [
           WhatsApp
         </a>
 
-    
+        <router-link
+          v-if="isLoggedIn"
+          to="/admin"
+          class="rounded-2xl px-4 py-3 text-sm font-semibold hover:bg-zinc-100"
+          @click="isOpen = false"
+        >
+          Admin
+        </router-link>
+
+        <button
+          v-if="isLoggedIn"
+          type="button"
+          class="rounded-2xl px-4 py-3 text-left text-sm font-semibold hover:bg-zinc-100"
+          @click="handleLogout"
+        >
+          Déconnexion
+        </button>
       </div>
     </div>
   </header>

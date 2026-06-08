@@ -32,6 +32,7 @@ onMounted(async () => {
       )
     `)
     .eq("slug", route.params.slug)
+    .eq("is_available", true)
     .single();
 
   if (error || !data) {

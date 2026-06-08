@@ -2,6 +2,10 @@
 import { computed, onMounted, ref } from "vue";
 import { useRoute } from "vue-router";
 import { supabase } from "../../lib/supabase";
+import {
+  removeProductImageByUrl,
+  uploadProductImage,
+} from "../../lib/productStorage";
 
 const route = useRoute();
 
@@ -69,27 +73,6 @@ async function loadProductAndVariants() {
   loading.value = false;
 }
 
-async function uploadVariantImage(file) {
-  const fileExt = file.name.split(".").pop();
-  const fileName = `variants/${Date.now()}-${Math.random()
-    .toString(36)
-    .slice(2)}.${fileExt}`;
-
-  const { error } = await supabase.storage
-    .from("products")
-    .upload(fileName, file, {
-      upsert: false,
-    });
-
-  if (error) {
-    throw new Error(error.message || "Erreur upload image");
-  }
-
-  const { data } = supabase.storage.from("products").getPublicUrl(fileName);
-
-  return data.publicUrl;
-}
-
 async function handleCreateVariant() {
   errorMessage.value = "";
 
@@ -104,15 +87,20 @@ async function handleCreateVariant() {
   }
 
   formLoading.value = true;
+  let imageUrl = null;
 
   try {
-    const imageUrl = await uploadVariantImage(imageFile.value);
+    imageUrl = await uploadProductImage("variants", imageFile.value);
 
     if (newVariant.value.is_default) {
-      await supabase
+      const { error: resetError } = await supabase
         .from("product_variants")
         .update({ is_default: false })
         .eq("product_id", productId.value);
+
+      if (resetError) {
+        throw new Error(resetError.message || "Erreur mise à jour variante");
+      }
     }
 
     const { error } = await supabase.from("product_variants").insert({
@@ -135,6 +123,10 @@ async function handleCreateVariant() {
 
     await loadProductAndVariants();
   } catch (error) {
+    if (imageUrl) {
+      await removeProductImageByUrl(imageUrl);
+    }
+
     errorMessage.value =
       error instanceof Error ? error.message : "Erreur création variante";
   } finally {
@@ -147,6 +139,7 @@ async function handleDeleteVariant(variantId) {
   if (!confirmed) return;
 
   deletingId.value = variantId;
+  const variant = variants.value.find((item) => item.id === variantId);
 
   const { error } = await supabase
     .from("product_variants")
@@ -160,6 +153,7 @@ async function handleDeleteVariant(variantId) {
   }
 
   variants.value = variants.value.filter((variant) => variant.id !== variantId);
+  await removeProductImageByUrl(variant?.image_url);
   deletingId.value = null;
 }
 

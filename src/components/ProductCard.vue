@@ -51,13 +51,13 @@ watch(
 
 <template>
   <article class="group">
-    <div class="relative aspect-[4/5] overflow-hidden bg-zinc-100">
+    <div class="relative aspect-[4/5] overflow-hidden rounded-2xl bg-zinc-100">
       <router-link :to="`/product/${product.slug}`" class="block h-full w-full">
         <img
           v-if="selectedImage?.image_url"
           :src="selectedImage.image_url"
           :alt="product.name"
-          class="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+          class="h-full w-full object-cover transition duration-700 group-hover:scale-105"
         />
         <div
           v-else
@@ -69,14 +69,14 @@ watch(
 
       <span
         v-if="product.is_featured"
-        class="absolute left-4 top-4 bg-white px-4 py-2 text-xs font-semibold uppercase tracking-wide text-zinc-800 shadow-sm"
+        class="absolute left-3 top-3 rounded-full bg-white/90 px-3 py-1.5 text-[11px] font-bold uppercase tracking-wide text-zinc-800 shadow-sm backdrop-blur"
       >
         Nouveauté
       </span>
 
       <span
         v-if="!product.is_available"
-        class="absolute right-4 top-4 bg-black px-4 py-2 text-xs font-semibold uppercase tracking-wide text-white shadow-sm"
+        class="absolute right-3 top-3 rounded-full bg-black/85 px-3 py-1.5 text-[11px] font-bold uppercase tracking-wide text-white shadow-sm backdrop-blur"
       >
         Indisponible
       </span>
@@ -89,10 +89,10 @@ watch(
         type="button"
         :title="image.label"
         @click="selectedImage = image"
-        class="relative h-11 w-11 shrink-0 overflow-hidden rounded-md border bg-zinc-100 transition"
+        class="relative h-9 w-9 shrink-0 overflow-hidden rounded-full border bg-zinc-100 transition"
         :class="
           selectedImage?.id === image.id
-            ? 'border-black ring-1 ring-black'
+            ? 'border-black ring-2 ring-black/15'
             : 'border-zinc-200 hover:border-zinc-500'
         "
       >
@@ -100,21 +100,23 @@ watch(
       </button>
     </div>
 
-    <div class="mt-3">
+    <div class="mt-4">
       <router-link
         :to="`/product/${product.slug}`"
-        class="font-medium text-zinc-900 hover:underline"
+        class="block text-base font-semibold leading-snug text-zinc-950 hover:underline"
       >
-      {{ product.name }}   {{ selectedImage.label }}
+        {{ product.name }}
       </router-link>
 
-      <p class="mt-1 text-sm text-zinc-500">  {{ product.category }}</p>
+      <div class="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-zinc-500">
+        <span>{{ product.category }}</span>
+        <span v-if="selectedImage?.label" class="text-zinc-300">/</span>
+        <span v-if="selectedImage?.label" class="text-zinc-600">
+          {{ selectedImage.label }}
+        </span>
+      </div>
 
-      <p v-if="selectedImage?.label" class="mt-1 text-sm text-zinc-400">
-      
-      </p>
-
-      <p v-if="product.pattern" class="mt-1 text-sm text-zinc-400">
+      <p v-if="product.pattern" class="mt-2 text-sm text-zinc-400">
         Motif : {{ product.pattern }}
       </p>
     </div>

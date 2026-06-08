@@ -2,6 +2,10 @@
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { supabase } from "../../lib/supabase";
+import {
+  removeProductImageByUrl,
+  uploadProductImage,
+} from "../../lib/productStorage";
 import AdminProductForm from "./AdminProductForm.vue";
 
 const router = useRouter();
@@ -18,35 +22,13 @@ function slugify(value) {
     .replace(/^-+|-+$/g, "");
 }
 
-async function uploadImage(file) {
-  if (!file) return null;
-
-  const fileExt = file.name.split(".").pop();
-  const fileName = `covers/${Date.now()}-${Math.random()
-    .toString(36)
-    .slice(2)}.${fileExt}`;
-
-  const { error: uploadError } = await supabase.storage
-    .from("products")
-    .upload(fileName, file, {
-      upsert: false,
-    });
-
-  if (uploadError) {
-    throw new Error(uploadError.message || "Erreur upload image");
-  }
-
-  const { data } = supabase.storage.from("products").getPublicUrl(fileName);
-
-  return data.publicUrl;
-}
-
 async function handleCreateProduct(payload) {
   errorMessage.value = "";
   loading.value = true;
+  let imageUrl = null;
 
   try {
-    const imageUrl = await uploadImage(payload.image);
+    imageUrl = payload.image ? await uploadProductImage("covers", payload.image) : null;
 
     const { error } = await supabase.from("products").insert({
       name: payload.name,
@@ -67,6 +49,10 @@ async function handleCreateProduct(payload) {
 
     router.push("/admin/products");
   } catch (error) {
+    if (imageUrl) {
+      await removeProductImageByUrl(imageUrl);
+    }
+
     errorMessage.value =
       error instanceof Error ? error.message : "Erreur création produit";
   } finally {

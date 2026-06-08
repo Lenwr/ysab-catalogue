@@ -2,6 +2,10 @@
 import { onMounted, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { supabase } from "../../lib/supabase";
+import {
+  removeProductImageByUrl,
+  uploadProductImage,
+} from "../../lib/productStorage";
 import AdminProductForm from "./AdminProductForm.vue";
 
 const route = useRoute();
@@ -42,40 +46,20 @@ async function loadProduct() {
   pageLoading.value = false;
 }
 
-async function uploadImage(file) {
-  if (!file) return null;
-
-  const fileExt = file.name.split(".").pop();
-  const fileName = `covers/${Date.now()}-${Math.random()
-    .toString(36)
-    .slice(2)}.${fileExt}`;
-
-  const { error: uploadError } = await supabase.storage
-    .from("products")
-    .upload(fileName, file, {
-      upsert: false,
-    });
-
-  if (uploadError) {
-    throw new Error(uploadError.message || "Erreur upload image");
-  }
-
-  const { data } = supabase.storage.from("products").getPublicUrl(fileName);
-
-  return data.publicUrl;
-}
-
 async function handleUpdateProduct(payload) {
   if (!product.value) return;
 
   errorMessage.value = "";
   loading.value = true;
+  let uploadedImageUrl = null;
 
   try {
-    let imageUrl = product.value.cover_image_url || null;
+    const previousImageUrl = product.value.cover_image_url || null;
+    let imageUrl = previousImageUrl;
 
     if (payload.image) {
-      imageUrl = await uploadImage(payload.image);
+      uploadedImageUrl = await uploadProductImage("covers", payload.image);
+      imageUrl = uploadedImageUrl;
     }
 
     const { error } = await supabase
@@ -98,8 +82,16 @@ async function handleUpdateProduct(payload) {
       throw new Error(error.message || "Erreur mise à jour produit");
     }
 
+    if (uploadedImageUrl && previousImageUrl) {
+      await removeProductImageByUrl(previousImageUrl);
+    }
+
     router.push("/admin/products");
   } catch (error) {
+    if (uploadedImageUrl) {
+      await removeProductImageByUrl(uploadedImageUrl);
+    }
+
     errorMessage.value =
       error instanceof Error ? error.message : "Erreur mise à jour produit";
   } finally {

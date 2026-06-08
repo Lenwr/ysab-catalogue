@@ -1,9 +1,10 @@
 <script setup>
-import { onMounted, ref } from "vue";
+import { defineAsyncComponent, onMounted, ref } from "vue";
 import { supabase } from "../lib/supabase";
 
-
-const heroImages = ["/images/waxhollandais.jpg", "/images/superwax.jpg", "/images/hero1.jpeg", "/images/hero2.jpeg"];
+const HeroFabric3D = defineAsyncComponent(() =>
+  import("../components/HeroFabric3D.vue")
+);
 
 const categories = [
   { name: "Wax Hollandais", image: "/images/wax hollandais.png" },
@@ -45,6 +46,7 @@ onMounted(async () => {
       )
     `)
     .eq("is_featured", true)
+    .eq("is_available", true)
     .order("created_at", { ascending: false })
     .limit(4);
 
@@ -58,10 +60,10 @@ onMounted(async () => {
     <!-- HERO -->
     <section class="px-4 pb-8 pt-6 md:px-6 md:pb-12 md:pt-8">
       <div
-        class="mx-auto max-w-7xl rounded-[2rem] border border-white/60 bg-white/55 p-5 shadow-[0_20px_60px_rgba(0,0,0,0.08)] backdrop-blur-xl md:rounded-[2.5rem] md:p-8"
+        class="mx-auto max-w-[calc(100vw-2rem)] overflow-hidden rounded-[2rem] border border-white/60 bg-white/55 p-5 shadow-[0_20px_60px_rgba(0,0,0,0.08)] backdrop-blur-xl md:max-w-7xl md:rounded-[2.5rem] md:p-8"
       >
-        <div class="grid gap-10 md:grid-cols-2 md:items-center">
-          <div>
+        <div class="grid min-w-0 gap-8 md:grid-cols-[0.95fr_1.05fr] md:items-center">
+          <div class="min-w-0">
             <div
               class="inline-flex items-center gap-2 rounded-full border border-black/10 bg-white/70 px-4 py-2 text-xs font-semibold uppercase tracking-[0.25em] text-zinc-600 shadow-sm"
             >
@@ -70,12 +72,12 @@ onMounted(async () => {
             </div>
 
             <h1
-              class="mt-6 max-w-2xl text-4xl font-bold leading-tight tracking-tight sm:text-5xl md:text-6xl"
+              class="mt-6 max-w-[19rem] text-3xl font-bold leading-tight tracking-tight sm:max-w-full sm:text-5xl md:max-w-2xl md:text-6xl"
             >
               Le catalogue de pagnes qui met vos collections en valeur.
             </h1>
 
-            <p class="mt-5 max-w-xl text-base leading-8 text-zinc-600 md:text-lg">
+            <p class="mt-5 max-w-[19rem] text-sm leading-7 text-zinc-600 sm:max-w-full sm:text-base md:max-w-xl md:text-lg">
               Découvrez des modèles élégants, des variantes de couleurs riches
               et une présentation premium pensée pour inspirer vos clients.
             </p>
@@ -83,7 +85,7 @@ onMounted(async () => {
             <div class="mt-8 flex flex-col gap-3 sm:flex-row">
               <router-link
                 to="/catalogue"
-                class="inline-flex items-center justify-center rounded-full bg-black px-7 py-4 text-sm font-bold text-white shadow-lg shadow-black/20 transition hover:-translate-y-0.5 hover:bg-zinc-800"
+                class="inline-flex min-w-0 items-center justify-center rounded-full bg-black px-7 py-4 text-sm font-bold text-white shadow-lg shadow-black/20 transition hover:-translate-y-0.5 hover:bg-zinc-800"
               >
                 Voir le catalogue
               </router-link>
@@ -92,7 +94,7 @@ onMounted(async () => {
                 href="https://wa.me/22890045934"
                 target="_blank"
                 rel="noopener noreferrer"
-                class="inline-flex items-center justify-center rounded-full border border-black/10 bg-white/80 px-7 py-4 text-sm font-bold text-black shadow-sm transition hover:-translate-y-0.5 hover:bg-white"
+                class="inline-flex min-w-0 items-center justify-center rounded-full border border-black/10 bg-white/80 px-7 py-4 text-sm font-bold text-black shadow-sm transition hover:-translate-y-0.5 hover:bg-white"
               >
                 Contacter sur WhatsApp
               </a>
@@ -122,30 +124,8 @@ onMounted(async () => {
             </div>
           </div>
 
-          <div class="grid grid-cols-2 gap-4">
-            <div
-              class="overflow-hidden rounded-[1.8rem] border border-white/70 bg-white/70 p-2 shadow-[0_18px_40px_rgba(0,0,0,0.08)]"
-            >
-              <div class="aspect-[3/4] overflow-hidden rounded-[1.35rem]">
-                <img
-                  :src="heroImages[2]"
-                  alt="Pagne YSAB"
-                  class="h-full w-full object-cover"
-                />
-              </div>
-            </div>
-
-            <div
-              class="mt-10 overflow-hidden rounded-[1.8rem] border border-white/70 bg-white/70 p-2 shadow-[0_18px_40px_rgba(0,0,0,0.08)]"
-            >
-              <div class="aspect-[3/4] overflow-hidden rounded-[1.35rem]">
-                <img
-                  :src="heroImages[3]"
-                  alt="Collection YSAB"
-                  class="h-full w-full object-cover"
-                />
-              </div>
-            </div>
+          <div class="relative -mx-2 min-w-0 md:-mr-8">
+            <HeroFabric3D texture-url="/images/hero2.jpg" />
           </div>
         </div>
       </div>
@@ -165,7 +145,7 @@ onMounted(async () => {
             preload="none"
             class="absolute inset-0 h-full w-full object-cover"
           >
-            <source src="/videos/videoaccueil.webm" type="video/mp4" />
+            <source src="/videos/videoaccueil.webm" type="video/webm" />
           </video>
 
           <div

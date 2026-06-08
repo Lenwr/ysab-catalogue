@@ -3,6 +3,9 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "engines": {
+    "node": ">=20.19.0"
+  },
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc -b && vite build",
@@ -12,6 +15,7 @@
     "@supabase/supabase-js": "^2.105.3",
     "@tailwindcss/postcss": "^4.2.4",
     "pinia": "^3.0.4",
+    "three": "^0.184.0",
     "vue": "^3.5.32",
     "vue-router": "^5.0.6"
   },
